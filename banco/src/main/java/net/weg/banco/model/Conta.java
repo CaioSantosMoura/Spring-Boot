@@ -1,16 +1,16 @@
 package net.weg.banco.model;
 
 import lombok.*;
-import net.weg.banco.exceptions.*;
 
 @Data
-@AllArgsConstructor
 public class Conta {
     @NonNull
-    private int numero;
+    private Integer numero;
     @NonNull
-    private double saldo;
-    private double limite;
-    public String titular;
+    private Double saldo;
+    @NonNull
+    private Double limite;
+    @NonNull
+    private String titular;
 
 }
