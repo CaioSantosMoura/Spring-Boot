@@ -3,6 +3,7 @@ package net.weg.banco.model;
 import lombok.*;
 
 @Data
+@Entity
 public class Conta {
     @NonNull
     private Integer numero;
