@@ -1,8 +1,15 @@
 package net.weg.banco.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import net.weg.banco.model.Conta;
+import lombok.Builder;
+import net.weg.banco.model.dto.ContaPostRequestDTO;
+import net.weg.banco.model.entity.Conta;
 import net.weg.banco.service.ContaService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +21,19 @@ public class ContaController {
 
     ContaService contaService;
 
-    @GetMapping()
+    @GetMapping
     public List<Conta> buscarTodasAsContas() {
         return contaService.buscarContas();
+    }
+
+    @GetMapping("/page")
+    public Page<Conta> buscarTodasAsContas(
+            @PageableDefault(size = 20,
+                             sort = "saldo",
+                             direction = Sort.Direction.DESC,
+                             page = 0
+    ) Pageable pageable) {
+        return contaService.buscarContas(pageable);
     }
 
     @GetMapping("/{id}")
@@ -25,9 +42,9 @@ public class ContaController {
     }
 
     @PostMapping
-    public String cadastrarConta(@RequestBody Conta conta) {
-        contaService.criarConta(conta);
-        return conta.toString();
+    public String cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
+        contaService.criarConta(contaDTO);
+        return contaDTO.toString();
     }
 
     @DeleteMapping("/{id}")
@@ -37,7 +54,7 @@ public class ContaController {
     }
 
     @PutMapping("/{id}")
-    public Conta atualizarConta(@RequestBody Integer id ,@RequestBody Conta conta) {
+    public Conta atualizarConta(@PathVariable Integer id ,@RequestBody Conta conta) {
         return contaService.atualizarConta(id, conta);
     }
 
