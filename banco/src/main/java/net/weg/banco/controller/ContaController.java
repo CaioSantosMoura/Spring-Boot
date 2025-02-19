@@ -10,8 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -42,9 +45,16 @@ public class ContaController {
     }
 
     @PostMapping
-    public String cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
-        contaService.criarConta(contaDTO);
-        return contaDTO.toString();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Conta cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
+        try {
+            Conta conta = contaService.criarConta(contaDTO);
+            return conta;
+        } catch (SQLException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST)
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")

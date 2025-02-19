@@ -9,7 +9,6 @@ import net.weg.banco.model.entity.Conta;
 public record ContaPostRequestDTO(@NotBlank String titular, @Positive @NotNull Integer numero,
                                   @PositiveOrZero Double limite) {
 
-
     public Conta convert() {
        return Conta.builder()
                 .titular(titular)
