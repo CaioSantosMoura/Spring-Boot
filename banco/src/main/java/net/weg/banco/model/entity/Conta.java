@@ -1,27 +1,28 @@
 package net.weg.banco.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "tb_conta")
 public class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NonNull
     private Integer numero;
-    @NonNull
     private Double saldo;
-    @NonNull
     private Double limite;
-    @NonNull
-    private String titular;
+//    @ManyToOne
+//    private Cliente titular;
+//    @ManyToMany(mappedBy = "contas")
+//    private List<Cliente> titulares;
+    @OneToOne
+    private Cliente titular;
 
     public static ContaBuilder builder() {
         return new ContaBuilder();
@@ -32,7 +33,7 @@ public class Conta {
         private Integer numero;
         private Double saldo;
         private Double limite;
-        private String titular;
+        private Cliente titular;
 
         public ContaBuilder id(Integer id){
             this.id = id;
@@ -50,9 +51,16 @@ public class Conta {
             this.limite = limite;
             return this;
         }
-        public ContaBuilder titular(String titular) {
+
+        public ContaBuilder cliente(Cliente titular) {
             this.titular = titular;
+            return this;
         }
+
+//        public ContaBuilder cliente(List<Cliente> titulares) {
+//            this.titulares = titulares;
+//            return this;
+//        }
 
         public Conta build() {
             return new Conta(id,numero, saldo, limite, titular);

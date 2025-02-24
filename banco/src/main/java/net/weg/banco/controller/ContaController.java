@@ -2,7 +2,6 @@ package net.weg.banco.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import net.weg.banco.model.dto.ContaPostRequestDTO;
 import net.weg.banco.model.entity.Conta;
 import net.weg.banco.service.ContaService;
@@ -47,14 +46,8 @@ public class ContaController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Conta cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
-        try {
-            Conta conta = contaService.criarConta(contaDTO);
-            return conta;
-        } catch (SQLException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST)
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Conta conta = contaService.criarConta(contaDTO);
+        return conta;
     }
 
     @DeleteMapping("/{id}")
