@@ -1,6 +1,7 @@
 package net.weg.banco.controller;
 
 import net.weg.banco.model.dto.ExceptionHandlerResponseDTO;
+import net.weg.banco.model.exceptions.MesmoTitularException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +21,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionHandlerResponseDTO capturaDeErro(NoSuchElementException e) {
+        return new ExceptionHandlerResponseDTO(e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(MesmoTitularException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionHandlerResponseDTO capturaDeErro(MesmoTitularException e) {
         return new ExceptionHandlerResponseDTO(e.getMessage(), LocalDateTime.now());
     }
 }

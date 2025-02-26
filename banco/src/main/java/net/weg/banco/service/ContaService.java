@@ -9,42 +9,43 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class ContaService {
-
-    ContaRepository contaRepository;
+    private final ContaRepository repository;
 
     public Conta criarConta(ContaPostRequestDTO contaDTO) {
         Conta conta = contaDTO.convert();
-        return contaRepository.save(conta);
+        return repository.save(conta);
     }
 
     public List<Conta> buscarContas() {
-        return contaRepository.findAll();
+        return repository.findAll();
     }
 
     public Page<Conta> buscarContas(Pageable pageable) {
-        return contaRepository.findAll(pageable);
+        return repository.findAll(pageable);
     }
 
     public Conta buscarConta(Integer id) {
-        return contaRepository.findById(id).get();
+        return repository.findById(id).get();
     }
 
     public void removerConta(Integer id) {
-        contaRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     public Conta atualizarConta(Integer id, Conta conta) {
         conta.setId(id);
-        return contaRepository.save(conta);
+        return repository.save(conta);
     }
 
     public Conta alterarLimite(Integer id, Double limite) {
         Conta conta = buscarConta(id);
         conta.setLimite(limite);
-        return contaRepository.save(conta);
+        return repository.save(conta);
     }
+
 }

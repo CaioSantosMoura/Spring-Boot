@@ -3,9 +3,14 @@ package net.weg.banco.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import net.weg.banco.model.dto.ClientePostRequestDTO;
+import net.weg.banco.model.dto.ClientePutRequestDTO;
 import net.weg.banco.model.entity.Cliente;
 import net.weg.banco.repository.ClienteRepository;
 import net.weg.banco.service.ClienteService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cliente")
 @AllArgsConstructor
 public class ClienteController {
-    private final ClienteRepository clienteRepository;
     private ClienteService clienteService;
 
     @PostMapping
@@ -28,20 +32,34 @@ public class ClienteController {
                           @Valid @RequestBody ClientePutRequestDTO clienteDTO) {
         return clienteService.editar(id, clienteDTO);
     }
+//
+//    @PatchMapping
+//    @ResponseStatus(HttpStatus.OK)
+//    public Cliente alterarContas(@PathVariable Integer id,  @RequestParam Integer idConta) {
+//        return clienteService.alterarConta(id, idConta);
+//    }
 
-    @PatchMapping
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Cliente clientePorId(@PathVariable Integer id) {
-        return clienteRepository.findById(id).get();
+    public Cliente buscarCliente(@PathVariable Integer id) {
+        return clienteService.buscarCliente(id);
     }
 
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    public Page<Cliente> buscarClientes(@PageableDefault(
+            size = 20,
+            sort = "nome",
+            direction = Sort.Direction.ASC,
+            page = 0
+    ) Pageable pageable) {
+        return clienteService.buscarClientes(pageable);
+    }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removerCliente(@PathVariable Integer id) {
+        clienteService.removerCliente(id);
+    }
 }

@@ -17,12 +17,12 @@ public class Conta {
     private Integer numero;
     private Double saldo;
     private Double limite;
-//    @ManyToOne
-//    private Cliente titular;
+    @ManyToOne
+    private Cliente titular;
 //    @ManyToMany(mappedBy = "contas")
 //    private List<Cliente> titulares;
-    @OneToOne
-    private Cliente titular;
+//    @OneToOne
+//    private Cliente titular;
 
     public static ContaBuilder builder() {
         return new ContaBuilder();
