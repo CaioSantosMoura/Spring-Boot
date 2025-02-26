@@ -9,8 +9,10 @@ import net.weg.banco.model.entity.Conta;
 
 import java.util.List;
 
-public record ContaPostRequestDTO(@NotBlank Cliente titular, @Positive @NotNull Integer numero,
-                                  @PositiveOrZero Double limite) {
+public record ContaPostRequestDTO(
+        Cliente titular,
+        @Positive @NotNull Integer numero,
+        @PositiveOrZero Double limite) {
 
     public Conta convert() {
        return Conta.builder()

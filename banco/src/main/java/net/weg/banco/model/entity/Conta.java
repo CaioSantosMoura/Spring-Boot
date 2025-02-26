@@ -1,7 +1,9 @@
 package net.weg.banco.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import net.weg.banco.model.dto.ContaGetResponseDTO;
 
 import java.util.List;
 
@@ -28,10 +30,16 @@ public class Conta {
         return new ContaBuilder();
     }
 
+    public ContaGetResponseDTO convert() {
+        return new ContaGetResponseDTO(
+                this.id, this.numero, this.saldo,
+                this.limite, this.titular.convert());
+    }
+
     public static class ContaBuilder {
         private Integer id;
         private Integer numero;
-        private Double saldo;
+        private Double saldo = 0.0;
         private Double limite;
         private Cliente titular;
 

@@ -1,17 +1,16 @@
 package net.weg.banco.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.weg.banco.model.dto.ClienteContaGetResponseDTO;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -26,10 +25,13 @@ public class Cliente {
     private String nome;
     private Long cpf;
     @OneToMany(mappedBy = "titular")
-    private Set<Conta> contas;
+    private Set<Conta> contas = new HashSet<>();
 
     public Set<Conta> getContas() {
-        return Collections.unmodifiableSet(contas);
+        if (contas != null) {
+            return Collections.unmodifiableSet(contas);
+        }
+        return new HashSet<>();
     }
 
     public void addConta(@NotNull Conta conta) {
@@ -38,11 +40,16 @@ public class Cliente {
 
     public void removerConta(@NotNull @Positive Conta conta) {
         for (Conta conta1 : contas) {
-            if(conta1.getId().equals(conta.getId())) {
+            if (conta1.getId().equals(conta.getId())) {
                 this.contas.remove(conta1);
                 return;
             }
         }
+    }
+
+    public ClienteContaGetResponseDTO convert() {
+        return new ClienteContaGetResponseDTO(
+                this.id, this.nome, this.cpf);
     }
 //    @ManyToMany
 //    @JoinTable(

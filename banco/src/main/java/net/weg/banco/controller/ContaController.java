@@ -2,6 +2,7 @@ package net.weg.banco.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import net.weg.banco.model.dto.ContaGetResponseDTO;
 import net.weg.banco.model.dto.ContaPostRequestDTO;
 import net.weg.banco.model.entity.Conta;
 import net.weg.banco.service.ContaService;
@@ -40,15 +41,15 @@ public class ContaController {
     }
 
     @GetMapping("/{id}")
-    public Conta buscarContaPorId(@PathVariable Integer id) {
-        return contaService.buscarConta(id);
+    public ContaGetResponseDTO buscarContaPorId(@PathVariable Integer id) {
+        Conta conta = contaService.buscarConta(id);
+        return conta.convert();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Conta cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
-        Conta conta = contaService.criarConta(contaDTO);
-        return conta;
+        return contaService.criarConta(contaDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import net.weg.banco.model.dto.ClientePostRequestDTO;
 import net.weg.banco.model.dto.ClientePutRequestDTO;
+import net.weg.banco.model.dto.ClienteResponseDTO;
 import net.weg.banco.model.entity.Cliente;
 import net.weg.banco.repository.ClienteRepository;
 import net.weg.banco.service.ClienteService;
@@ -41,8 +42,9 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente buscarCliente(@PathVariable Integer id) {
-        return clienteService.buscarCliente(id);
+    public ClienteResponseDTO buscarCliente(@PathVariable Integer id) {
+        Cliente cliente = clienteService.buscarCliente(id);
+        return cliente.convert();
     }
 
 
