@@ -6,6 +6,7 @@ import net.weg.banco.model.dto.ContaGetResponseDTO;
 import net.weg.banco.model.dto.ContaPostRequestDTO;
 import net.weg.banco.model.entity.Conta;
 import net.weg.banco.service.ContaService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -43,7 +44,9 @@ public class ContaController {
     @GetMapping("/{id}")
     public ContaGetResponseDTO buscarContaPorId(@PathVariable Integer id) {
         Conta conta = contaService.buscarConta(id);
-        return conta.convert();
+        ContaGetResponseDTO responseDTO = new ContaGetResponseDTO();
+        BeanUtils.copyProperties(conta, responseDTO);
+        return responseDTO;
     }
 
     @PostMapping
