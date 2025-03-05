@@ -1,6 +1,7 @@
 package net.weg.banco.model.dto;
 
-public record ContaGetResponseDTO(
+
+public record ContaResponseDTO(
         Integer id,
         Integer numero,
         Double saldo,

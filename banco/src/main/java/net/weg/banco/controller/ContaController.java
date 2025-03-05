@@ -2,22 +2,20 @@ package net.weg.banco.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import net.weg.banco.model.dto.ContaGetResponseDTO;
+import net.weg.banco.model.dto.ContaResponseDTO;
 import net.weg.banco.model.dto.ContaPostRequestDTO;
 import net.weg.banco.model.entity.Conta;
 import net.weg.banco.service.ContaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -27,32 +25,37 @@ public class ContaController {
     ContaService contaService;
 
     @GetMapping
-    public List<Conta> buscarTodasAsContas() {
-        return contaService.buscarContas();
+    public List<ContaResponseDTO> buscarTodasAsContas() {
+        List<Conta> contas = contaService.buscarContas();
+        return contas.stream().map(Conta::convertToContaResponseDTO).toList();
     }
 
     @GetMapping("/page")
-    public Page<Conta> buscarTodasAsContas(
+    public Page<ContaResponseDTO> buscarTodasAsContas(
             @PageableDefault(size = 20,
-                             sort = "saldo",
-                             direction = Sort.Direction.DESC,
-                             page = 0
-    ) Pageable pageable) {
-        return contaService.buscarContas(pageable);
+                    sort = "saldo",
+                    direction = Sort.Direction.DESC,
+                    page = 0
+            ) Pageable pageable) {
+        Page<Conta> contasPage = contaService.buscarContas(pageable);
+        List<ContaResponseDTO> contasResponseList =
+                contasPage.getContent().stream().map
+                        (Conta::convertToContaResponseDTO).toList();
+        return new PageImpl<>(contasResponseList,
+                pageable, contasPage.getTotalElements());
     }
 
     @GetMapping("/{id}")
-    public ContaGetResponseDTO buscarContaPorId(@PathVariable Integer id) {
+    public ContaResponseDTO buscarContaPorId(@PathVariable Integer id) {
         Conta conta = contaService.buscarConta(id);
-        ContaGetResponseDTO responseDTO = new ContaGetResponseDTO();
-        BeanUtils.copyProperties(conta, responseDTO);
-        return responseDTO;
+        return conta.convertToContaResponseDTO();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Conta cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
-        return contaService.criarConta(contaDTO);
+    public ContaResponseDTO cadastrarConta(@RequestBody @Valid ContaPostRequestDTO contaDTO) {
+        Conta conta = contaService.criarConta(contaDTO);
+        return conta.convertToContaResponseDTO();
     }
 
     @DeleteMapping("/{id}")
@@ -62,12 +65,14 @@ public class ContaController {
     }
 
     @PutMapping("/{id}")
-    public Conta atualizarConta(@PathVariable Integer id ,@RequestBody Conta conta) {
-        return contaService.atualizarConta(id, conta);
+    public ContaResponseDTO atualizarConta(@PathVariable Integer id, @RequestBody ContaPutRequestDTO contaDTO) {
+        Conta conta = contaDTO.convert();
+        return conta.convertToContaResponseDTO();
     }
 
     @PatchMapping()
-    public Conta alterarLimite(@RequestParam Integer id, @RequestParam Double limite) {
-        return contaService.alterarLimite(id, limite);
+    public ContaResponseDTO alterarLimite(@RequestParam Integer id, @RequestParam Double limite) {
+        Conta contaDTO = contaService.alterarLimite(id, limite);
+        return contaDTO.convertToContaResponseDTO();
     }
 }

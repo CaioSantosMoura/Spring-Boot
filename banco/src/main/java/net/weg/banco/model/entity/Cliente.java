@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.weg.banco.model.dto.ClienteContaGetResponseDTO;
+import net.weg.banco.model.dto.ClienteResponseDTO;
+import net.weg.banco.model.dto.ContaClienteResponseDTO;
 
 import java.util.*;
 
@@ -26,6 +28,15 @@ public class Cliente {
     private Long cpf;
     @OneToMany(mappedBy = "titular")
     private Set<Conta> contas = new HashSet<>();
+    //    @ManyToMany
+//    @JoinTable(
+//            name = "tb_cliente_conta",
+//            joinColumns =
+//            @JoinColumn(name = "cliente_id"),
+//            inverseJoinColumns =
+//            @JoinColumn(name = "conta_id"))
+//    @OneToOne(mappedBy = "titular")
+//    private Conta conta;
 
     public Set<Conta> getContas() {
         if (contas != null) {
@@ -51,13 +62,14 @@ public class Cliente {
         return new ClienteContaGetResponseDTO(
                 this.id, this.nome, this.cpf);
     }
-//    @ManyToMany
-//    @JoinTable(
-//            name = "tb_cliente_conta",
-//            joinColumns =
-//            @JoinColumn(name = "cliente_id"),
-//            inverseJoinColumns =
-//            @JoinColumn(name = "conta_id"))
-//    @OneToOne(mappedBy = "titular")
-//    private Conta conta;
+
+    public ClienteResponseDTO convertToClienteResponseDTO() {
+        Set<ContaClienteResponseDTO> contasDTO =
+                this.contas.stream().map(Conta::convertToContaClienteResponseDTO);
+        return new ClienteResponseDTO(
+                this.id,
+                this.nome,
+                this.cpf,
+                contasDTO);
+    }
 }

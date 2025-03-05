@@ -1,11 +1,9 @@
 package net.weg.banco.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import net.weg.banco.model.dto.ContaGetResponseDTO;
-
-import java.util.List;
+import net.weg.banco.model.dto.ContaClienteResponseDTO;
+import net.weg.banco.model.dto.ContaResponseDTO;
 
 @Data
 @Entity
@@ -30,10 +28,19 @@ public class Conta {
         return new ContaBuilder();
     }
 
-    public ContaGetResponseDTO convert() {
-        return new ContaGetResponseDTO(
+    public ContaResponseDTO convert() {
+        return new ContaResponseDTO(
                 this.id, this.numero, this.saldo,
                 this.limite, this.titular.convert());
+    }
+
+    public ContaResponseDTO convertToContaResponseDTO() {
+        return new ContaResponseDTO(
+                this.id,
+                this.numero,
+                this.saldo,
+                this.limite,
+                this.titular.convert());
     }
 
     public static class ContaBuilder {
@@ -72,6 +79,15 @@ public class Conta {
 
         public Conta build() {
             return new Conta(id,numero, saldo, limite, titular);
+        }
+
+        public ContaClienteResponseDTO convertToContaClienteResponseDTO() {
+            return new ContaClienteResponseDTO(
+                    this.id,
+                    this.saldo,
+                    this.limite,
+                    this.numero);
+
         }
     }
 
