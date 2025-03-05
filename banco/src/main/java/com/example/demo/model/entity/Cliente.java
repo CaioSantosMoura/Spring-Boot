@@ -26,7 +26,8 @@ public class Cliente {
     private String nome;
     private Long cpf;
     @OneToMany(mappedBy = "titular")
-    private Set<Conta> contas;
+    private Set<Conta> contas = new HashSet<>();
+
 
     public Set<Conta> getContas() {
         if(this.contas != null){
