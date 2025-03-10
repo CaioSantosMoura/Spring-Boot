@@ -27,7 +27,9 @@ public class Cliente {
     private String nome;
     private Long cpf;
     @OneToMany(mappedBy = "titular",
-            cascade = CascadeType.REMOVE)
+            cascade = {CascadeType.PERSIST,
+                    CascadeType.MERGE},
+            orphanRemoval = true)
     private List<Conta> contas;
 
     public void addConta(@NotNull Conta conta) {
@@ -40,12 +42,11 @@ public class Cliente {
     }
 
     public void removerConta(@NotNull Conta conta) {
-
         if (!contas.contains(conta)) {
             throw new RuntimeException();
-
         } else {
             contas.remove(conta);
+            conta.setTitular(null);
         }
     }
 
