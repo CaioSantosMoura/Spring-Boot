@@ -26,9 +26,9 @@ public class ContaController {
     private ContaService contaService;
 
     //  @RequestMapping(method = RequestMethod.GET, value = "/ola")
-    @GetMapping("/ola") // mesma coisa que o de cima só que de uma forma mais simplificada
+    @GetMapping("/world") // mesma coisa que o de cima só que de uma forma mais simplificada
     public String metodoGet(){
-        return "Olá Galera";
+        return "Hello World";
     }
 
     @PostMapping
